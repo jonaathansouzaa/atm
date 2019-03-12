@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.atm.enumerations.NotaEnum;
 import com.atm.exception.SaqueInvalidoException;
+import com.atm.saque.Saque100;
 
 public class Atm {
 
@@ -13,30 +14,17 @@ public class Atm {
 		
 		Boolean executeCalculo = true;
 		while (executeCalculo) {
-			if ((valor - NotaEnum.NOTA_100.getValor()) >= 0) {
-				valor = reduzValorEAdicionaNota(valor, NotaEnum.NOTA_100, notas);
-			} else if ((valor - NotaEnum.NOTA_50.getValor()) >= 0) {
-				valor = reduzValorEAdicionaNota(valor, NotaEnum.NOTA_50, notas);
-			} else if ((valor - NotaEnum.NOTA_20.getValor()) >= 0) {
-				valor = reduzValorEAdicionaNota(valor, NotaEnum.NOTA_20, notas);
-			} else if ((valor - NotaEnum.NOTA_10.getValor()) >= 0) {
-				valor = reduzValorEAdicionaNota(valor, NotaEnum.NOTA_10, notas);
-			} else {
+			valor = new Saque100().doSaque(valor, notas);
+			if (valor < 10) {
 				executeCalculo = false;
 			}
 		}
 		
 		if (valor > 0) {
-			throw new SaqueInvalidoException();
+			throw new SaqueInvalidoException("Não é possível realizar este saque, valor incorreto.");
 		}
 		
 		return notas;
-	}
-
-	private Integer reduzValorEAdicionaNota(Integer valor, NotaEnum notaEnum, ArrayList<NotaEnum> notas) {
-		valor -= notaEnum.getValor();
-		notas.add(notaEnum);
-		return valor;
 	}
 
 }
